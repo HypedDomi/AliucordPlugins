@@ -73,5 +73,6 @@ public class EditMessages extends Plugin {
     @Override
     public void stop(Context context) {
         commands.unregisterAll();
+        patcher.unpatchAll();
     }
 }
