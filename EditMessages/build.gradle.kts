@@ -1,2 +1,2 @@
 version = "0.1"
-description = "EditMessages"
+description = "Edit messages locally until next restart"
