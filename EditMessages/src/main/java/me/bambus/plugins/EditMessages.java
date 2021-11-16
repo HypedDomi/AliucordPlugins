@@ -1,4 +1,4 @@
-package com.aliucord.plugins;
+package me.bambus.plugins;
 
 import android.content.Context;
 import android.view.View;
@@ -30,8 +30,7 @@ public class EditMessages extends Plugin {
         commands.registerCommand("editmessages", "Displays information about EditMessages",
         Utils.createCommandOption(
             ApplicationCommandType.BOOLEAN,
-            "send", null, null,
-            true, false
+            "send", "Whether or not to send the message in chat (default false)"
         ), ctx -> {
             var output = "";
             var plugin = PluginManager.plugins.get("EditMessages");
@@ -43,7 +42,7 @@ public class EditMessages extends Plugin {
             } else {
                 output = "**EditMessages Info**\n> Version: Unknown\n> Author: Unknown\n> Description: Unknown";
             }
-            return new CommandsAPI.CommandResult(output, null, ctx.getBoolOrDefault("send", true));
+            return new CommandsAPI.CommandResult(output, null, ctx.getBoolOrDefault("send", false));
         });
 
         var id = View.generateViewId();
