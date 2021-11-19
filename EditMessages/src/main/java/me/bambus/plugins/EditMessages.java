@@ -47,7 +47,9 @@ public class EditMessages extends Plugin {
 
     class EditPage extends SettingsPage {
         private Message message;
-        public EditPage(Message message) {
+        private WidgetChatListActions messageMenu;
+        public EditPage(WidgetChatListActions menu, Message message) {
+            this.messageMenu = menu;
             this.message = message;
         }
     
@@ -60,7 +62,8 @@ public class EditMessages extends Plugin {
             var ctx = view.getContext();
             LinearLayout layout = getLinearLayout();
             LinearLayout original = new LinearLayout(ctx);
-            LinearLayout buttons = new LinearLayout(ctx);
+            LinearLayout buttonsUp = new LinearLayout(ctx);
+            LinearLayout buttonsDown = new LinearLayout(ctx);
             LinearLayout newMSG_Header = new LinearLayout(ctx);
             LinearLayout newMSG = new LinearLayout(ctx);
             
@@ -91,7 +94,6 @@ public class EditMessages extends Plugin {
             copyButton.setOnClickListener(v -> {
                 Utils.setClipboard("Copy Content", content);
                 Utils.showToast(ctx, "Copied content to clipboard");
-                logger.info("Copied content to clipboard");
             });
             
             var deleteIcon = ContextCompat.getDrawable(ctx, R.e.ic_delete_24dp).mutate();
@@ -113,14 +115,14 @@ public class EditMessages extends Plugin {
                     StoreStream.getMessages().handleMessageDelete(new ModelMessageDelete(message.getChannelId(), message.getId()));
                 }
                 Utils.showToast(ctx, "Message deleted");
-                logger.info("Message deleted");
+                logger.debug("Message " + message.getId() + " deleted");
             });
 
-            buttons.setPadding(0, 0, 0, DimenUtils.dpToPx(12));
-            buttons.addView(copyButton);
-            buttons.addView(deleteButton);
+            buttonsUp.setPadding(0, 0, 0, DimenUtils.dpToPx(12));
+            buttonsUp.addView(copyButton);
+            buttonsUp.addView(deleteButton);
 
-            layout.addView(buttons);
+            layout.addView(buttonsUp);
 
             var newMessageHeader = new TextView(ctx, null, 0, R.i.UiKit_Settings_Item_Header);
             newMessageHeader.setText("Edit message");
@@ -156,16 +158,40 @@ public class EditMessages extends Plugin {
 
             LinearLayout.LayoutParams saveButtonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             saveButtonParams.setLayoutDirection(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+            saveButtonParams.rightMargin = DimenUtils.dpToPx(3);
             saveButton.setLayoutParams(saveButtonParams);
             saveButton.setText("Update");
             // var saveIcon = ContextCompat.getDrawable(ctx, R.e.icon_save).mutate();
             // saveButton.setCompoundDrawablesWithIntrinsicBounds(saveIcon, null, null, null);
             saveButton.setEnabled(!newMessage.getText().toString().isEmpty());
             saveButton.setOnClickListener(v -> {
-                Utils.showToast(ctx, newMessage.getText().toString());
-                logger.info("Updated Message");
+                // TODO: Update message
+                // message.setContent(newMessage.getText().toString());
+                messageMenu.dismiss();
+                getActivity().onBackPressed();
+                Utils.showToast(ctx, "Message updated");
+                logger.debug("Message " + message.getId() + " updated");
             });
-            layout.addView(saveButton);
+
+            DangerButton resetButton = new DangerButton(ctx);
+            LinearLayout.LayoutParams resetButtonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            resetButtonParams.setLayoutDirection(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+            resetButtonParams.leftMargin = DimenUtils.dpToPx(3);
+            resetButton.setLayoutParams(resetButtonParams);
+            resetButton.setText("Reset");
+            resetButton.setOnClickListener(v -> {
+                // TODO: Reset message
+                // message.setContent(newMessage.getText().toString());
+                newMessage.setText(!content.isEmpty() ? content : "");
+                Utils.showToast(ctx, "Message reset");
+                logger.debug("Message " + message.getId() + " reset");
+            });
+
+            buttonsDown.setPadding(0, 0, 0, DimenUtils.dpToPx(12));
+            buttonsDown.addView(saveButton);
+            buttonsDown.addView(resetButton);
+
+            layout.addView(buttonsDown);
         }
     }
     
@@ -207,7 +233,7 @@ public class EditMessages extends Plugin {
                 editDrawable.setTint(ColorCompat.getThemedColor(ctx, R.b.colorInteractiveNormal));
                 view.setCompoundDrawablesRelativeWithIntrinsicBounds(editDrawable, null, null, null);
                 view.setOnClickListener(e -> {
-                    Utils.openPageWithProxy(e.getContext(), new EditPage(msg));
+                    Utils.openPageWithProxy(e.getContext(), new EditPage(_this, msg));
                 });
 
                 for (int i = 0; i < layout.getChildCount(); i++) {
