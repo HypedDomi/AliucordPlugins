@@ -7,3 +7,6 @@ Download the plugins from [here](https://github.com/HypedDomi/AliucordPlugins/tr
 # Plugins
 ### [EditMessages](https://github.com/HypedDomi/AliucordPlugins/raw/builds/EditMessages.zip)
 Edit messages locally until next restart
+
+### [VoiceUsersCounter](https://github.com/HypedDomi/AliucordPlugins/raw/builds/VoiceUsersCounter.zip)
+Adds a count of users they're connected to a VoiceChannel
