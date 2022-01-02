@@ -1,4 +1,3 @@
-include(":EditMessages")
-include(":VoiceUsersCounter")
+include(":ViewChannelInvites")
 
 rootProject.name = "AliucordPlugins"
