@@ -51,16 +51,17 @@ public class ReplaceTimestamps extends Plugin {
 
     private String getUnixTimestamp(String time) {
         DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        time = date.format(new Date()) + " " + time;
+        String _time = date.format(new Date()) + " " + time;
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date then = null;
         try {
-            then = df.parse(time);
+            then = df.parse(_time);
         } catch (Exception e) {
             logger.error(e);
+            return time;
         }
         int unixTime = Math.round(then.getTime() / 1000);
-        if (Double.isNaN((double) unixTime) || then == null)
+        if (Double.isNaN((double) unixTime))
             return time;
         return "<t:" + unixTime + ":t>";
     }
