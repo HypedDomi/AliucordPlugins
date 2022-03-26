@@ -1,3 +1,3 @@
-include(":ViewChannelInvites")
+include(":ReplaceTimestamps")
 
 rootProject.name = "AliucordPlugins"

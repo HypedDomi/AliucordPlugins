@@ -1,5 +1,5 @@
-version = "0.1"
-description = "View all invites for a specific channel"
+version = "1.0"
+description = "Replaces plaintext 24 hour timestamps into Discord's timestamps"
 
 aliucord.changelog.set(
     """

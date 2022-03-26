@@ -1,0 +1,72 @@
+package me.bambus.plugins;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+
+import com.aliucord.Logger;
+import com.aliucord.annotations.AliucordPlugin;
+import com.aliucord.entities.Plugin;
+import com.aliucord.patcher.PreHook;
+import com.discord.widgets.chat.MessageContent;
+import com.discord.widgets.chat.MessageManager;
+import com.discord.widgets.chat.input.ChatInputViewModel;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import kotlin.jvm.functions.Function1;
+
+@SuppressWarnings("unused")
+@AliucordPlugin
+public class ReplaceTimestamps extends Plugin {
+    public Logger logger = new Logger("ReplaceTimestamps");
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void start(Context context) throws Throwable {
+        try {
+            patcher.patch(ChatInputViewModel.class.getDeclaredMethod("sendMessage", Context.class, MessageManager.class,
+                    MessageContent.class, List.class, boolean.class, Function1.class), new PreHook(callFrame -> {
+                        MessageContent content = (MessageContent) callFrame.args[2];
+                        String text = content.getTextContent();
+
+                        final Pattern pattern = Pattern.compile("(?<!\\d)\\d{1,2}:\\d{2}(?!\\d)");
+                        final Matcher matcher = pattern.matcher(text);
+
+                        while (matcher.find()) {
+                            String timestamp = matcher.group();
+                            text = text.replace(timestamp, getUnixTimestamp(timestamp));
+                        }
+
+                        callFrame.args[2] = new MessageContent(text, content.component2());
+                    }));
+        } catch (Exception e) {
+            logger.error(e);
+        }
+    }
+
+    private String getUnixTimestamp(String time) {
+        DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        time = date.format(new Date()) + " " + time;
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date then = null;
+        try {
+            then = df.parse(time);
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        int unixTime = Math.round(then.getTime() / 1000);
+        if (Double.isNaN((double) unixTime) || then == null)
+            return time;
+        return "<t:" + unixTime + ":t>";
+    }
+
+    @Override
+    public void stop(Context context) {
+        patcher.unpatchAll();
+    }
+}
