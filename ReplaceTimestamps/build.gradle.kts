@@ -1,10 +1,10 @@
-version = "1.0"
+version = "1.1"
 description = "Replaces plaintext 24 hour timestamps into Discord's timestamps"
 
 aliucord.changelog.set(
     """
-    YEAH {added marginTop}
+    FIXED {fixed marginTop}
     ======================
-    * The Plugin exists
+    * Fixed invalid Time being parsed
     """.trimIndent()
 )

@@ -50,6 +50,12 @@ public class ReplaceTimestamps extends Plugin {
     }
 
     private String getUnixTimestamp(String time) {
+        String[] timeParts = time.split(":");
+        int hours = Integer.parseInt(timeParts[0]);
+        int minutes = Integer.parseInt(timeParts[1]);
+        if (hours > 23 || minutes > 59) {
+            return time;
+        }
         DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
         String _time = date.format(new Date()) + " " + time;
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
