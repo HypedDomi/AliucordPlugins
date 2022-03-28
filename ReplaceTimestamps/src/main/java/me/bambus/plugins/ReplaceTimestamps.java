@@ -31,19 +31,19 @@ public class ReplaceTimestamps extends Plugin {
         try {
             patcher.patch(ChatInputViewModel.class.getDeclaredMethod("sendMessage", Context.class, MessageManager.class,
                     MessageContent.class, List.class, boolean.class, Function1.class), new PreHook(callFrame -> {
-                        MessageContent content = (MessageContent) callFrame.args[2];
-                        String text = content.getTextContent();
+                MessageContent content = (MessageContent) callFrame.args[2];
+                String text = content.getTextContent();
 
-                        final Pattern pattern = Pattern.compile("(?<!\\d)\\d{1,2}:\\d{2}(?!\\d)");
-                        final Matcher matcher = pattern.matcher(text);
+                final Pattern pattern = Pattern.compile("(?<!\\d)\\d{1,2}:\\d{2}(?!\\d)");
+                final Matcher matcher = pattern.matcher(text);
 
-                        while (matcher.find()) {
-                            String timestamp = matcher.group();
-                            text = text.replace(timestamp, getUnixTimestamp(timestamp));
-                        }
+                while (matcher.find()) {
+                    String timestamp = matcher.group();
+                    text = text.replace(timestamp, getUnixTimestamp(timestamp));
+                }
 
-                        callFrame.args[2] = new MessageContent(text, content.component2());
-                    }));
+                callFrame.args[2] = new MessageContent(text, content.component2());
+            }));
         } catch (Exception e) {
             logger.error(e);
         }
