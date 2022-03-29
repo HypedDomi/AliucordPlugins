@@ -66,8 +66,8 @@ public class ReplaceTimestamps extends Plugin {
             logger.error(e);
             return time;
         }
-        int unixTime = Math.round(then.getTime() / 1000);
-        if (Double.isNaN((double) unixTime))
+        int unixTime = Integer.parseInt(String.valueOf(then.getTime()).substring(0, String.valueOf(then.getTime()).length() - 3));
+        if (Double.isNaN(unixTime))
             return time;
         return "<t:" + unixTime + ":t>";
     }
