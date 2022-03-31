@@ -23,18 +23,19 @@ import java.util.Arrays;
 
 @SuppressLint("SetTextI18n")
 public final class PluginSettings extends SettingsPage {
-    private static final String plugin = "BetterReplies";
-
+    private static final String pluginName = "BetterReplies";
     private final SettingsAPI settings;
+    public BetterReplies plugin;
 
-    public PluginSettings(SettingsAPI settings) {
-        this.settings = settings;
+    public PluginSettings(BetterReplies plugin) {
+        this.plugin = plugin;
+        this.settings = plugin.settings;
     }
 
     @Override
     public void onViewBound(View view) {
         super.onViewBound(view);
-        setActionBarTitle(plugin);
+        setActionBarTitle(pluginName);
         setPadding(0);
 
         var context = view.getContext();
@@ -81,7 +82,7 @@ public final class PluginSettings extends SettingsPage {
     }
 
     public void reloadPlugin() {
-        PluginManager.stopPlugin(plugin);
-        PluginManager.startPlugin(plugin);
+        PluginManager.stopPlugin(pluginName);
+        PluginManager.startPlugin(pluginName);
     }
 }
